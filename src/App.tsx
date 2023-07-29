@@ -2,11 +2,13 @@
 import './App.scss';
 
 import { cloneDeep, times } from 'lodash-es';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CLUSTER_AND_CELL_INDEX_TO_ROW_AND_COLUMN } from './App.consts';
 import { CellState, Coordinate, NumberOption } from './App.types';
 import Cell from './Cell';
+
+const LOCAL_STORAGE_STATE_KEY = 'manual-sudoku.state';
 
 const defaultCellState: CellState = {
   value: null,
@@ -17,8 +19,32 @@ function App() {
   const [state, setState] = useState<CellState[][]>(
     times(9, () => times(9, () => cloneDeep(defaultCellState))),
   );
+  const [stateHistory, setStateHistory] = useState<CellState[][][]>([]);
   const [hoverCell, setHoverCell] = useState<Coordinate | null>(null);
   const [selectedCell, setSelectedCell] = useState<Coordinate | null>(null);
+
+  const undoState = () => {
+    const previousState = stateHistory.at(-1);
+
+    if (previousState) {
+      setState(previousState);
+      setStateHistory(stateHistory.slice(0, stateHistory.length - 1));
+    }
+  };
+
+  useEffect(() => {
+    // Load state if it exists
+    const storedState = localStorage.getItem(LOCAL_STORAGE_STATE_KEY);
+    if (storedState) {
+      setStateAndStoreState(JSON.parse(storedState));
+    }
+  }, []);
+
+  const setStateAndStoreState = (newState: CellState[][]) => {
+    setStateHistory([...stateHistory, state]);
+    localStorage.setItem(LOCAL_STORAGE_STATE_KEY, JSON.stringify(newState));
+    setState(newState);
+  };
 
   const setValue = (value: NumberOption | null) => {
     if (!selectedCell) {
@@ -31,7 +57,7 @@ function App() {
     } else {
       newState[selectedCell.row][selectedCell.column].value = value;
     }
-    setState(newState);
+    setStateAndStoreState(newState);
   };
 
   const togglePossibility = (row: number, column: number, possibility: NumberOption) => {
@@ -44,7 +70,7 @@ function App() {
       newState[row][column].possibilities.push(possibility);
       newState[row][column].possibilities.sort();
     }
-    setState(newState);
+    setStateAndStoreState(newState);
   };
 
   return (
@@ -97,6 +123,17 @@ function App() {
         })}
       </div>
       <div className={'c-options' + (selectedCell ? ' c-options--enabled' : '')}>
+        {/* undo button */}
+        <div
+          onClick={(evt) => {
+            evt.stopPropagation();
+            undoState();
+          }}
+        >
+          ⮌
+        </div>
+
+        {/* number buttons */}
         {times(9, (val) => val + 1).map((value) => {
           return (
             <div
@@ -110,6 +147,8 @@ function App() {
             </div>
           );
         })}
+
+        {/* remove number button */}
         <div
           onClick={(evt) => {
             evt.stopPropagation();
