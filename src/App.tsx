@@ -47,7 +47,6 @@ function App() {
     setState(newState);
   };
 
-  console.log({ hoverCell, selectedCell });
   return (
     <div
       className="c-app"
