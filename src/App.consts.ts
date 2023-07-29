@@ -1,3 +1,17 @@
+export const COLORS = [
+  '#7243cb',
+  '#59a036',
+  '#cb4ac0',
+  '#408f63',
+  '#db493b',
+  '#5d8ecf',
+  '#c88035',
+  '#775fae',
+  '#7f7a32',
+  '#ba4b7c',
+  '#9d4a3c',
+];
+
 export const CLUSTER_AND_CELL_INDEX_TO_ROW_AND_COLUMN = [
   [
     { row: 0, column: 0 },

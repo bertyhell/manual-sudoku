@@ -4,7 +4,7 @@ import './App.scss';
 import { cloneDeep, times } from 'lodash-es';
 import React, { useEffect, useState } from 'react';
 
-import { CLUSTER_AND_CELL_INDEX_TO_ROW_AND_COLUMN } from './App.consts';
+import { CLUSTER_AND_CELL_INDEX_TO_ROW_AND_COLUMN, COLORS } from './App.consts';
 import { CellState, Coordinate, NumberOption } from './App.types';
 import Cell from './Cell';
 
@@ -12,6 +12,7 @@ const LOCAL_STORAGE_STATE_KEY = 'manual-sudoku.state';
 
 const defaultCellState: CellState = {
   value: null,
+  color: null,
   possibilities: [1, 2, 3, 4, 5, 6, 7, 8, 9],
 };
 
@@ -56,6 +57,20 @@ function App() {
       newState[selectedCell.row][selectedCell.column].value = null;
     } else {
       newState[selectedCell.row][selectedCell.column].value = value;
+    }
+    setStateAndStoreState(newState);
+  };
+
+  const setColor = (color: number) => {
+    if (!selectedCell) {
+      window.alert('cannot set value when no cell is selected');
+      return;
+    }
+    const newState = cloneDeep(state);
+    if (newState[selectedCell.row][selectedCell.column].color === color) {
+      newState[selectedCell.row][selectedCell.column].color = null;
+    } else {
+      newState[selectedCell.row][selectedCell.column].color = color;
     }
     setStateAndStoreState(newState);
   };
@@ -157,6 +172,21 @@ function App() {
         >
           X
         </div>
+      </div>
+      <div className={'c-options' + (selectedCell ? ' c-options--enabled' : '')}>
+        {/* color buttons */}
+        {times(11).map((colorIndex) => {
+          return (
+            <div
+              key={'set-color-' + colorIndex}
+              style={{ backgroundColor: COLORS[colorIndex] }}
+              onClick={(evt) => {
+                evt.stopPropagation();
+                setColor(colorIndex);
+              }}
+            ></div>
+          );
+        })}
       </div>
     </div>
   );

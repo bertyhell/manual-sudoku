@@ -1,7 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */
-import { times } from 'lodash-es';
+import { isNil, times } from 'lodash-es';
 import React from 'react';
 
+import { COLORS } from './App.consts';
 import { CellState, Coordinate, NumberOption } from './App.types';
 
 function Cell({
@@ -58,8 +59,10 @@ function Cell({
         'c-cell' +
         (highlighted ? ' c-cell--highlighted' : '') +
         (selectedExplicit ? ' c-cell--selected-explicit' : '') +
-        (selectedImplicit ? ' c-cell--selected-implicit' : '')
+        (selectedImplicit ? ' c-cell--selected-implicit' : '') +
+        (!isNil(state.color) ? ' c-cell--colored' : '')
       }
+      style={isNil(state.color) ? {} : { backgroundColor: COLORS[state.color] }}
       onMouseOver={(evt) => {
         evt.stopPropagation();
         setHoverCell({ row, column });

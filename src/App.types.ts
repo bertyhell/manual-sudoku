@@ -2,6 +2,7 @@ export type NumberOption = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 export interface CellState {
   value: NumberOption | null;
+  color: number | null;
   possibilities: NumberOption[];
 }
 
