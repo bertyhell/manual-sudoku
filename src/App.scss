@@ -1,0 +1,131 @@
+@use 'sass:math';
+
+$cellWidth: 10vmin;
+$primaryColorDark: #133f70;
+$primaryColor: #2b65a1;
+$primaryColorLight: #71afec;
+$primaryColorExtraLight: #a3d2ff;
+
+* {
+  box-sizing: border-box;
+}
+
+.c-app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.c-playboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 3px;
+  width: calc(9 * $cellWidth + 24px);
+  height: calc(9 * $cellWidth + 24px);
+  border: 6px solid black;
+  border-right-width: 9px;
+  border-bottom-width: 9px;
+  background-color: black;
+}
+
+.c-cluster {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 1px;
+}
+
+.c-cell {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  border: 1px solid black;
+  width: $cellWidth;
+  height: $cellWidth;
+  text-align: center;
+  line-height: math.div($cellWidth, 3);
+  cursor: pointer;
+  background-color: white;
+
+  div {
+    color: #999;
+    font-size: 1.5vmin;
+
+    &.c-cell__single-value {
+      line-height: $cellWidth - 0.6vmin;
+      font-size: 6vmin;
+      width: $cellWidth;
+      height: $cellWidth;
+      color: black;
+    }
+  }
+
+  &:hover,
+  &--highlighted,
+  &--selected-explicit,
+  &--selected-implicit {
+    div {
+      color: white;
+
+      &.c-cell__single-value {
+        color: white;
+      }
+    }
+  }
+
+  &:hover {
+    background-color: $primaryColorLight;
+
+    &.c-cell--selected-explicit {
+      background-color: $primaryColor;
+    }
+  }
+
+  &--highlighted {
+    background-color: $primaryColorExtraLight;
+  }
+
+  &--selected-implicit {
+    background-color: $primaryColorLight;
+  }
+
+  &--selected-explicit {
+    background-color: $primaryColor;
+
+    div:hover {
+      background-color: $primaryColorDark;
+    }
+  }
+}
+
+.c-options {
+  display: flex;
+  margin-top: 10px;
+
+  div {
+    color: #ddd;
+    line-height: 5.4vmin;
+    font-size: 3vmin;
+    width: 6vmin;
+    height: 6vmin;
+    text-align: center;
+    border: 3px solid #ddd;
+    margin-right: 5px;
+  }
+
+  &--enabled {
+    div {
+      border-color: black;
+      color: black;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $primaryColor;
+        color: white;
+      }
+    }
+  }
+}
